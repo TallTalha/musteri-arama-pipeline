@@ -1,7 +1,7 @@
 # 1. Gerekli kütüphaneleri import ediyoruz
 from fastapi import FastAPI
-from kafka import KafkaProducer # YENİ: Kafka Producer'ı import ediyoruz
-from kafka.errors import KafkaError # YENİ: Olası Kafka hatalarını yakalamak için
+from kafka import KafkaProducer #  Kafka Producer'ı import ediyoruz
+from kafka.errors import KafkaError #  Olası Kafka hatalarını yakalamak için
 import time
 import random
 import json
