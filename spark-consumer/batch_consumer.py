@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, from_json
 from pyspark.sql.types import StructType, StructField, StringType, LongType
+import os
 
 def main():
     # SparkSession oluştur
@@ -14,11 +15,12 @@ def main():
     spark.sparkContext.setLogLevel("WARN")  # Log seviyesini WARN olarak ayarla
 
     kafka_topic = "search-logs"
-    kafka_bootstrap_servers = "localhost:9092" # SSH Tüneli sayesinde localhost
+    kafka_server = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
+    print(f"Kafka'ya bağlanılıyor: {kafka_server}")
 
     kafka_df = ( spark.read
         .format("kafka") 
-        .option("kafka.bootstrap.servers", kafka_bootstrap_servers) 
+        .option("kafka.bootstrap.servers", kafka_server) 
         .option("subscribe", kafka_topic) 
         .option("startingOffsets", "earliest") # Topic'teki TÜM mesajları en baştan itibaren oku
         .load()
