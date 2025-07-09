@@ -80,20 +80,20 @@ def main():
     
     print("Veriler MongoDB'ye yazılıyor...")
     (
-        top_10_cities
+        top_10_cities.write
         .format("mongodb")
         .mode("overwrite")
         .option("collection","top_10_sehirler")
         .save()
     )
     (
-        top_10_searches
+        top_10_searches.write
         .format("mongodb")
         .mode("overwrite")
         .option("collection","top_10_aramalar")
         .save()
     )
-    
+
     spark.stop()  # Spark oturumunu kapat
     print("Spark oturumu kapatıldı.")
 
