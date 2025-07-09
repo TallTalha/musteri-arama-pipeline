@@ -1,5 +1,5 @@
 # 1. Gerekli kütüphaneleri import ediyoruz
-from fastapi import FastAPI
+from fastapi import FastAPI #type: ignore
 from kafka import KafkaProducer #  Kafka Producer'ı import ediyoruz
 from kafka.errors import KafkaError #  Olası Kafka hatalarını yakalamak için
 import time
