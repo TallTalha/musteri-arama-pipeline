@@ -5,6 +5,9 @@ from kafka.errors import KafkaError #  Olası Kafka hatalarını yakalamak için
 import time
 import random
 import json
+from utils.logger import setup_logger
+
+logger = setup_logger(__name__)  # Logger'ı ayarlıyoruz
 
 # 2. Kafka Producer'ı yapılandır ve oluştur (Uygulama Seviyesinde)
 try:
@@ -17,11 +20,11 @@ try:
         # sonra da Kafka'nın anladığı byte formatına (`utf-8`) çeviriyoruz.
         value_serializer=lambda v: json.dumps(v).encode('utf-8')
     )
-    print("Kafka Producer bağlantısı başarıyla kuruldu.")
+    logger.info("Kafka Producer bağlantısı başarıyla kuruldu.")
 except KafkaError as e:
     # Eğer Kafka çalışmıyorsa veya ulaşılamıyorsa, uygulama çökmek yerine
     # hata basar ve producersız devam eder.
-    print(f"Kafka Producer başlatılırken hata oluştu: {e}")
+    logger.error(f"Kafka Producer başlatılırken hata oluştu: {e}")
     producer = None
 
 # 3. FastAPI uygulamasını oluşturuyoruz
@@ -48,13 +51,13 @@ def search_index(term: str):
         try:
             # Belirttiğimiz topic'e, search_data'yı değer olarak gönderiyoruz.
             producer.send('search-logs', value=search_data)
-            print(f"Mesaj başarıyla 'search-logs' topic'ine gönderildi: {search_data}")
+            logger.info(f"Mesaj başarıyla 'search-logs' topic'ine gönderildi: {search_data}")
         except KafkaError as e:
             # Mesaj gönderimi sırasında bir hata olursa hata mesajını basıyoruz
-            print(f"Kafka'ya mesaj gönderilirken hata oluştu: {e}")
+            logger.error(f"Kafka'ya mesaj gönderilirken hata oluştu: {e}")
     else:
         # Producer hiç başlatılamadıysa bilgilendirme yap
-        print("Kafka Producer aktif değil, mesaj gönderilemedi.")
+        logger.info("Kafka Producer aktif değil, mesaj gönderilemedi.")
 
-    print(json.dumps(search_data, indent=2)) 
+    logger.info(json.dumps(search_data, indent=2)) 
     return search_data

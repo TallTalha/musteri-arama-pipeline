@@ -4,6 +4,9 @@ from pyspark.sql.functions import col, from_json, desc, to_timestamp # type: ign
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType #type: ignore
 from kafka.errors import KafkaError 
 import os
+from utils.logger import setup_logger
+
+logger = setup_logger(__name__)  # Logger'ı başlat
 
 def main():
     kafka_mongo_connector_packages = "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.mongodb.spark:mongo-spark-connector_2.12:10.3.0"
@@ -19,12 +22,12 @@ def main():
     )
 
     spark.sparkContext.setLogLevel("WARN")  # Log seviyesini WARN olarak ayarla
-    print("Spark session oluşturuldu.")
+    logger.info("Spark session oluşturuldu.")
 
     kafka_topic = "search-analysis-userid"
     kafka_server = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
     try:
-        print(f"Kafka topiğine bağlanılıyor: {kafka_topic} sunucu: {kafka_server}")
+        logger.info(f"Kafka topiğine bağlanılıyor: {kafka_topic} sunucu: {kafka_server}")
         kafka_df = (
             spark.read
             .format("kafka")
@@ -34,7 +37,7 @@ def main():
             .load() 
         )
     except KafkaError as e:
-        print(f"Kafka'ya topiğine bağlanırken hata oluştu: {e}")
+        logger.error(f"Kafka'ya topiğine bağlanırken hata oluştu: {e}")
         return 0
 
     schema = StructType([
@@ -56,11 +59,11 @@ def main():
     final_df = parsed_df.withColumn("timestamp", to_timestamp(col("timestamp")))
     final_df.printSchema()  # Şemayı kontrol et
 
-    print("Veri Kafka'dan okundu ve ayrıştırıldı.")
+    logger.info("Veri Kafka'dan okundu ve ayrıştırıldı.")
 
     final_df.cache()  # Veriyi önbelleğe al
     record_count = final_df.count()  # Toplam kayıt sayısını al
-    print(f"Toplam kayıt sayısı: {record_count}")
+    logger.info(f"Toplam kayıt sayısı: {record_count}")
 
     # Pivot Analizi: Kullanıcı ID'lerine Göre Arama Terimleri
     search_by_userid_df = (
@@ -73,7 +76,7 @@ def main():
         .sum("count")  # Her kullanıcı için arama terimlerinin toplam sayısını al
     ).na.fill(0)  # NaN değerleri 0 ile doldur
 
-    print("Pivot analizi tamamlandı. İlk 10 kayıt:")
+    logger.info("Pivot analizi tamamlandı. İlk 10 kayıt:")
     pivot_df.show(10, truncate=False)  # İlk 10 kaydı göster
 
     # Sonucu MongoDB'ye yazma
@@ -85,9 +88,9 @@ def main():
             .option("collection", "search_by_userid_pivot") 
             .save()
         )
-        print("Pivot analizi MongoDB'ye başarıyla yazıldı.")
+        logger.info("Pivot analizi MongoDB'ye başarıyla yazıldı.")
     except Exception as e:
-        print(f"MongoDB'ye yazılırken hata oluştu: {e}")
+        logger.error(f"MongoDB'ye yazılırken hata oluştu: {e}")
     
     spark.stop()  # Spark oturumunu kapat
 

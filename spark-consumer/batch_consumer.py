@@ -2,6 +2,9 @@ from pyspark.sql import SparkSession # type: ignore
 from pyspark.sql.functions import col, from_json, desc # type: ignore
 from pyspark.sql.types import StructType, StructField, StringType, LongType #type: ignore
 import os
+from utils.logger import setup_logger
+
+logger = setup_logger(__name__)  
 
 def main():
 
@@ -17,11 +20,11 @@ def main():
     ) 
     
     spark.sparkContext.setLogLevel("WARN")  # Log seviyesini WARN olarak ayarla
-    print("Spark session oluşuturuldu.")
+    logger.info("Spark session oluşuturuldu.")
     
     kafka_topic = "search-logs"
     kafka_server = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
-    print(f"Kafka'ya bağlanılıyor: {kafka_server}")
+    logger.debug(f"Kafka'ya bağlanılıyor: {kafka_server}")
 
     kafka_df = ( spark.read
         .format("kafka") 
@@ -31,7 +34,7 @@ def main():
         .load()
     )
 
-    print("Kafka'dan ham veri okundu. Ham verinin şeması:")
+    logger.info("Kafka'dan ham veri okundu. Ham verinin şeması:")
     kafka_df.printSchema() # Ham Kafka verisinin şemasını görelim
 
     # Kafka'dan veri okuma için uygun schema tanımlar
@@ -45,13 +48,13 @@ def main():
     from_json(col("value").cast("string"), schema).alias("data")  # JSON string'i uygun schema ile ayrıştır
     ).select("data.*")  # Sadece ayrıştırılmış veriyi seç
     parsed_df.cache()
-    print("Veri kafkadan okundu ve ayrıştırıldı.")
+    logger.info("Veri kafkadan okundu ve ayrıştırıldı.")
 
     record_count = parsed_df.count()  # Toplam kayıt sayısını al
-    print(f"Toplam kayıt sayısı: {record_count}")
+    logger.info(f"Toplam kayıt sayısı: {record_count}")
 
     if record_count > 0:
-        print("Ayrıştırılmış verinin ilk 10 kaydı:")
+        logger.info("Ayrıştırılmış verinin ilk 10 kaydı:")
         parsed_df.show(10, truncate=False)
 
     # En Çok Arama Yapan 10 Şehir
@@ -72,30 +75,44 @@ def main():
 
     # Lazy Evulation Tetikleyicisi
     # Spark show/write gibi bir aksiyon görene kadar işlemleri gerçekten çalıştırmaz.
-    print("En çok arama yapılan 10 şehir:")
+    logger.info("En çok arama yapılan 10 şehir:")
     top_10_cities.show(truncate=False)
-    print("En çok araması yapılan 10 ürün:")
+    logger.info("En çok araması yapılan 10 ürün:")
     top_10_searches.show(truncate=False)
     
     
-    print("Veriler MongoDB'ye yazılıyor...")
-    (
-        top_10_cities.write
-        .format("mongodb")
-        .mode("overwrite")
-        .option("collection","top_10_sehirler")
-        .save()
-    )
-    (
-        top_10_searches.write
-        .format("mongodb")
-        .mode("overwrite")
-        .option("collection","top_10_aramalar")
-        .save()
-    )
+    logger.info("Veriler MongoDB'ye yazılıyor...")
+
+    # Her bir yazma işlemini kendi try-except bloğuna almak,
+    # biri başarısız olursa diğerinin denenmesine olanak tanır.
+    try:
+        logger.info(f"'top_10_sehirler' koleksiyonuna yazılıyor...")
+        (
+        top_10_cities.write.format("mongodb") 
+                     .mode("overwrite") 
+                     .option("collection", "top_10_sehirler") 
+                     .save()
+        )
+        logger.info("'top_10_sehirler' koleksiyonuna başarıyla yazıldı.")
+    except Exception as e:
+        # Hata durumunda, hatayı loglayarak programın çökmesini engelliyoruz.
+        logger.error(f"'top_10_sehirler' koleksiyonuna yazılırken bir hata oluştu: {e}")
+
+    try:
+        logger.info(f"'top_10_aramalar' koleksiyonuna yazılıyor...")
+        (
+        top_10_searches.write.format("mongodb") 
+                       .mode("overwrite") 
+                       .option("collection", "top_10_aramalar") 
+                       .save()
+        )
+        logger.info("'top_10_aramalar' koleksiyonuna başarıyla yazıldı.")
+    except Exception as e:
+        logger.error(f"'top_10_aramalar' koleksiyonuna yazılırken bir hata oluştu: {e}")
+
 
     spark.stop()  # Spark oturumunu kapat
-    print("Spark oturumu kapatıldı.")
+    logger.info("Spark oturumu kapatıldı.")
 
 if __name__ == "__main__":
     main()  # Ana fonksiyonu çalıştır

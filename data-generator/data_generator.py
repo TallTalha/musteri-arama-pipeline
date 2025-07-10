@@ -5,6 +5,9 @@ from datetime import datetime, timezone, timedelta
 from faker import Faker
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
+from utils.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 def generate_random_timestamp_iso():
     """Rastgele bir ISO 8601 zaman damgası üretir."""
@@ -28,8 +31,9 @@ try:
         )
 
     )
+    logger.info("Kafka Producer başarıyla oluşturuldu.")
 except KafkaError as e:
-    print(f"Kafkaya bağlanırken hata oluştu: {e}")
+    logger.error(f"Kafkaya bağlanırken hata oluştu: {e}")
     exit()
 
 search_terms = [
@@ -42,7 +46,7 @@ weights = [ random.randint(1, 20) for _ in search_terms ]
 
 TOPIC_NAME = "search-analysis-userid"
 VERI_SAYISI = 30000
-print(f"Kafkaya bağlanıldı. Topic: {TOPIC_NAME}. Veri sayısı: {VERI_SAYISI} veri üretilecek.")
+logger.info(f"Kafkaya bağlanıldı. Topic: {TOPIC_NAME}. Veri sayısı: {VERI_SAYISI} veri üretilecek.")
       
 for i in range(VERI_SAYISI):
     user_id = random.randint(1000, 2000)
@@ -60,13 +64,13 @@ for i in range(VERI_SAYISI):
     try:
         producer.send(TOPIC_NAME, value=message)
         if i % 1000 == 0:
-            print(f"{i} veri gönderildi.")
+            logger.info(f"{i} veri gönderildi.")
     except KafkaError as e:
-        print(f"Mesaj gönderilirken hata oluştu: {e}")
+        logger.error(f"Mesaj gönderilirken hata oluştu: {e}")
         continue
     sleep(0.01)  # 10ms bekleme, Kafka'ya aşırı yük bindirmemek için
 
 producer.flush()  # Tüm mesajların gönderilmesini bekle
-print("Tüm veriler Kafka'ya gönderildi.")
+logger.info("Tüm veriler Kafka'ya gönderildi.")
 producer.close()  # Üreticiyi kapat
-print("Kafka üreticisi kapatıldı.")
+logger.info("Kafka üreticisi kapatıldı.")
