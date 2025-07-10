@@ -71,7 +71,7 @@ def main():
         search_by_userid_df.groupBy("user_id")
         .pivot("search")
         .sum("count")  # Her kullanıcı için arama terimlerinin toplam sayısını al
-    ).na().fill(0)  # NaN değerleri 0 ile doldur
+    ).na.fill(0)  # NaN değerleri 0 ile doldur
 
     print("Pivot analizi tamamlandı. İlk 10 kayıt:")
     pivot_df.show(10, truncate=False)  # İlk 10 kaydı göster
