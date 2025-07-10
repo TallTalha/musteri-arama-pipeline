@@ -1,4 +1,4 @@
-from pyspark import SparkSession # type: ignore
+from pyspark.sql import SparkSession # type: ignore
 from pyspark.sql import DataFrame # type: ignore
 from pyspark.sql.functions import col, from_json, desc, to_timestamp # type: ignore
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType #type: ignore
