@@ -1,6 +1,6 @@
 import json
 import random
-from time import timesleep
+from time import sleep 
 from datetime import datetime, timezone, timedelta
 from faker import Faker
 from kafka import KafkaProducer
@@ -64,7 +64,7 @@ for i in range(VERI_SAYISI):
     except KafkaError as e:
         print(f"Mesaj gönderilirken hata oluştu: {e}")
         continue
-    timesleep(0.01)  # 10ms bekleme, Kafka'ya aşırı yük bindirmemek için
+    sleep(0.01)  # 10ms bekleme, Kafka'ya aşırı yük bindirmemek için
 
 producer.flush()  # Tüm mesajların gönderilmesini bekle
 print("Tüm veriler Kafka'ya gönderildi.")
