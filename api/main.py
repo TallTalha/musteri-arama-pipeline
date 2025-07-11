@@ -1,4 +1,5 @@
 # 1. Gerekli kütüphaneleri import ediyoruz
+from datetime import datetime
 from fastapi import FastAPI #type: ignore
 from kafka import KafkaProducer #  Kafka Producer'ı import ediyoruz
 from kafka.errors import KafkaError #  Olası Kafka hatalarını yakalamak için
@@ -57,7 +58,41 @@ def search_index(term: str):
             logger.error(f"Kafka'ya mesaj gönderilirken hata oluştu: {e}")
     else:
         # Producer hiç başlatılamadıysa bilgilendirme yap
-        logger.info("Kafka Producer aktif değil, mesaj gönderilemedi.")
+        logger.warning("Kafka Producer aktif değil, mesaj gönderilemedi.")
 
     logger.info(json.dumps(search_data, indent=2)) 
     return search_data
+
+@app.get("/search/stream")
+def search_stream(term: str):
+    """
+    Bu endpoint, sürekli olarak arama terimlerini dinler.
+    """
+    timestamp = datetime.now(time.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    region = random.choice(cities)  # Rastgele bir şehir seçiyoruz
+    user_id = random.randint(1000, 2000)  # Rastgele bir kullanıcı ID'si oluşturuyoruz
+    
+    message = {
+        "user_id": user_id,
+        "search": term,
+        "timestamp": timestamp,
+        "region": region
+    }
+
+    STREAM_TOPIC_NAME = "search-analysis-stream"
+
+    if producer:
+        try:
+            # Belirttiğimiz topic'e, message'ı değer olarak gönderiyoruz.
+            producer.send(STREAM_TOPIC_NAME, value=message)
+            logger.info(f"Mesaj başarıyla '{STREAM_TOPIC_NAME}' topic'ine gönderildi: {message}")
+        except KafkaError as e:
+            logger.error(f"Kafka'ya mesaj gönderilirken hata oluştu: {e}")
+    else:
+        logger.warning("Kafka Producer aktif değil, mesaj gönderilemedi.")
+
+    # JSON formatında mesajı döndürüyoruz
+    return {
+        "message": "Mesaj gönderildi.", 
+        "data": message
+    }
