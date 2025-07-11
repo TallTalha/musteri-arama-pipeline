@@ -60,6 +60,7 @@ def main():
         .format("console")  # Konsola yazdırma formatı
         .outputMode("append")  # Sadece yeni eklenen verileri göster
         .option("truncate", "false")  # Uzun verileri kesme
+        .option("checkpointLocation", "checkpoint/stream_consumer_v1")
         .start()  # Akışı başlat
     )
 

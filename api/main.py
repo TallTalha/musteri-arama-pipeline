@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import FastAPI #type: ignore
 from kafka import KafkaProducer #  Kafka Producer'ı import ediyoruz
 from kafka.errors import KafkaError #  Olası Kafka hatalarını yakalamak için
-import time
+from time import timezone, time
 import random
 import json
 from utils.logger import setup_logger
@@ -68,7 +68,7 @@ def search_stream(term: str):
     """
     Bu endpoint, sürekli olarak arama terimlerini dinler.
     """
-    timestamp = datetime.now(time.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
     region = random.choice(cities)  # Rastgele bir şehir seçiyoruz
     user_id = random.randint(1000, 2000)  # Rastgele bir kullanıcı ID'si oluşturuyoruz
     
