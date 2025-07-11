@@ -7,7 +7,7 @@ from kafka import KafkaProducer
 from kafka.errors import KafkaError
 from utils.logger import setup_logger
 
-logger = setup_logger(__name__)
+logger = setup_logger("data_generator")
 
 def generate_random_timestamp_iso():
     """Rastgele bir ISO 8601 zaman damgası üretir."""

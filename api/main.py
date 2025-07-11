@@ -7,7 +7,7 @@ import random
 import json
 from utils.logger import setup_logger
 
-logger = setup_logger(__name__)  # Logger'ı ayarlıyoruz
+logger = setup_logger("api_main")  # Logger'ı ayarlıyoruz
 
 # 2. Kafka Producer'ı yapılandır ve oluştur (Uygulama Seviyesinde)
 try:

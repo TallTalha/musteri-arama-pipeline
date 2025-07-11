@@ -6,7 +6,7 @@ from kafka.errors import KafkaError
 import os
 from utils.logger import setup_logger
 
-logger = setup_logger(__name__)  # Logger'ı başlat
+logger = setup_logger("pivot_analysis")  # Logger'ı başlat
 
 def main():
     kafka_mongo_connector_packages = "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.mongodb.spark:mongo-spark-connector_2.12:10.3.0"

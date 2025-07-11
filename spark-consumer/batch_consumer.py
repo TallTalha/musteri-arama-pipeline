@@ -4,7 +4,7 @@ from pyspark.sql.types import StructType, StructField, StringType, LongType #typ
 import os
 from utils.logger import setup_logger
 
-logger = setup_logger(__name__)  
+logger = setup_logger("batch_consumer")  # Logger'ı ayarlıyoruz
 
 def main():
 
