@@ -1,5 +1,5 @@
 import os
-from pysqpark.sql import SparkSession, DataFrame # type: ignore
+from pyspark.sql import SparkSession, DataFrame # type: ignore
 from pyspark.sql.functions import col, from_json, lower # type: ignore
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, TimestampType # type: ignore
 from utils.logger import setup_logger
