@@ -1,9 +1,9 @@
 # 1. Gerekli kütüphaneleri import ediyoruz
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import FastAPI #type: ignore
 from kafka import KafkaProducer #  Kafka Producer'ı import ediyoruz
 from kafka.errors import KafkaError #  Olası Kafka hatalarını yakalamak için
-from time import timezone, time
+from time import time
 import random
 import json
 from utils.logger import setup_logger
