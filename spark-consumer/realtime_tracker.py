@@ -54,7 +54,7 @@ def main():
         .config("spark.mongodb.connection.uri", mongodb_uri)
         .getOrCreate()
     )
-    logger.sparkContext.setLogLevel("WARN")
+    spark.sparkContext.setLogLevel("WARN")
     logger.info("Spark Session başlatıldı.")
 
     # Kafka'dan veri okuma
