@@ -91,7 +91,7 @@ def main():
     query = (
         maske_df.writeStream
         .foreachBatch(write_to_mongo)  # Her batch için MongoDB'ye yazma işlemi
-        .outputmode("append")  # Sadece yeni eklenen verileri göster
+        .outputMode("append")  # Sadece yeni eklenen verileri göster
         .option("truncate", "false")  # Uzun verileri kesme
         .option("checkpointLocation", "checkpoint/realtime_tracker_v1")  # Checkpoint konumu
         .trigger(processingTime="10 seconds")  # Her 10 saniyede bir işlem yap
