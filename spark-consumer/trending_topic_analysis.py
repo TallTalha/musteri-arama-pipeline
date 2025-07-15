@@ -63,7 +63,7 @@ def main():
     ).alias("data.*") 
 
     # Zaman Damgasını Doğru Tipe Çevirme
-    parsed_df = parsed_df.withColumn("timestamp_dt", col("timestamp").cast(TimestampType()))
+    parsed_df = parsed_df.withColumn("timestamp_dt", to_timestamp(col("timestamp")))
     logger.info("Veri ayrıştırıldı ve zaman damgası tipi düzeltildi.")
 
     # 30 dakikalık zaman dilimlerinde en çok arama yapılan ürünleri bul
