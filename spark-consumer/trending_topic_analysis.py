@@ -14,6 +14,7 @@ from utils.logger import setup_logger
 logger = setup_logger("trending_topic_analysis")  
 
 def main():
+    logger.info("Trending Topic Analysis Job başlatılıyor...")
     packages = "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.mongodb.spark:mongo-spark-connector_2.12:10.3.0"
     mongo_con_uri = "mongodb://localhost:27017/eticaret"
     # Spark Session oluştur
