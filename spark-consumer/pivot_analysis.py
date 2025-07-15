@@ -1,3 +1,8 @@
+"""
+# pivot_analysis.py
+Bu modül, Spark kullanarak Kafka'dan gelen arama verilerini okur,
+kullanıcı ID'lerine göre arama terimlerini pivotlayarak analiz eder ve MongoDB'ye yazar.
+"""
 from pyspark.sql import SparkSession # type: ignore
 from pyspark.sql import DataFrame # type: ignore
 from pyspark.sql.functions import col, from_json, desc, to_timestamp # type: ignore

@@ -1,3 +1,8 @@
+"""
+# realtime_tracker.py
+Bu modül, Spark Streaming kullanarak Kafka'dan gelen verileri okur,
+`maske´ ürününü içeren arama verilerini filtreler ve MongoDB'ye yazar.
+"""
 import os
 from pyspark.sql import SparkSession, DataFrame # type: ignore
 from pyspark.sql.functions import col, from_json, lower # type: ignore

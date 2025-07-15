@@ -1,3 +1,8 @@
+"""
+# streaming_consumer.py
+Bu modül, Spark Streaming kullanarak Kafka'dan gelen arama verilerini okur,
+verileri ayrıştırır, zaman damgasını uygun tipe çevirir ve konsola yazdırır.
+"""
 from pyspark.sql import SparkSession # type: ignore
 from pyspark.sql.functions import col, from_json, desc, to_timestamp # type: ignore
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, TimestampType #type: ignore

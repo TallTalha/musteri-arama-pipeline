@@ -1,3 +1,8 @@
+"""
+# batch_consumer.py
+Bu modül, Spark kullanarak Kafka'dan gelen arama verilerini okur,
+en çok arama yapılan şehir ve ürünleri analiz eder ve MongoDB'ye yazar.
+"""
 from pyspark.sql import SparkSession # type: ignore
 from pyspark.sql.functions import col, from_json, desc # type: ignore
 from pyspark.sql.types import StructType, StructField, StringType, LongType #type: ignore
