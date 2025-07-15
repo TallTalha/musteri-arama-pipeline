@@ -5,7 +5,7 @@ günün 30 dakikalık dilimlerinde en çok arama yapılan ürünleri analiz eder
 ve MongoDB'ye yazar.
 """
 from pyspark.sql import SparkSession  # type: ignore
-from pyspark.sql.functions import col, from_json, desc, to_timestamp, window  # type: ignore
+from pyspark.sql.functions import col, from_json, desc, window  # type: ignore
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, TimestampType  # type: ignore
 from kafka.errors import KafkaError
 import os
@@ -56,11 +56,10 @@ def main():
         StructField("timestamp", StringType(), True)
     ])
 
-    # JSON string'i uygun schema ile ayrıştır
+    # JSON string'i uygun schema ile ayrıştırır
     parsed_df = kafka_df.select(
-        from_json(col("value").cast("string"), schema)
-        .alias("data") 
-    ).alias("data.*") 
+        from_json(col("value").cast("string"), schema).alias("data")
+    ).select("data.*")  # Sadece ayrıştırılmış veriyi seç
 
     # Zaman Damgasını Doğru Tipe Çevirme
     parsed_df = parsed_df.withColumn("timestamp_dt", col("timestamp").cast(TimestampType()))
