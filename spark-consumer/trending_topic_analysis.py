@@ -88,7 +88,7 @@ def main():
         )
     )
 
-    logger.info("En çok arama yapılan ürünler hesaplandı.Özet sonuçlar:")
+    logger.info("Gün içinde, 30 dakikalık dilimlerde yapılan aramalar hesaplandı.Özet sonuçlar:")
     trending_df.show(10, truncate=False)  
     
     # MongoDB'ye yazma işlemi
