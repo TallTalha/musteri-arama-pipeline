@@ -93,6 +93,7 @@ def main():
     
     # MongoDB'ye yazma işlemi
     try:
+        logger.info("MongoDB'ye yazma işlemi başlatılıyor...")
         (
             trending_df.write
             .format("mongodb")
