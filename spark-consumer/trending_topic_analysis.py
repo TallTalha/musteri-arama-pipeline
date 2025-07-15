@@ -38,7 +38,7 @@ def main():
         kafka_df = (
             spark.read
             .format("kafka")
-            .orption("kafka.bootstrap.servers", kafka_server)
+            .option("kafka.bootstrap.servers", kafka_server)
             .option("subscribe", kafka_topic)
             .option("startingOffsets", "earliest")  # Topic'teki tüm mesajları en baştan itibaren oku
             .load()
