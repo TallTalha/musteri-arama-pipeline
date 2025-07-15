@@ -57,7 +57,7 @@ Proje, endüstri standardı olan, ayrıştırılmış (decoupled) ve ölçeklene
 4. Proje Yapısı
 
 Proje, her birinin kendi sorumluluğu ve sanal ortamı olan modüler bir yapıda organize edilmiştir:
-
+```
 musteri-arama-pipeline/
 ├── api/                  # FastAPI uygulaması ve bağımlılıkları
 │   ├── venv-api/
@@ -79,7 +79,7 @@ musteri-arama-pipeline/
 ├── checkpoint/           # Spark Streaming checkpoint'leri (git'e dahil değil)
 ├── .gitignore
 └── README.md
-
+´´´
 5. Kurulum ve Çalıştırma
 
 Bu projeyi çalıştırmak için sunucu tarafında ve yerel tarafta belirli adımların izlenmesi gerekir.
