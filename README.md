@@ -79,7 +79,7 @@ musteri-arama-pipeline/
 ├── checkpoint/           # Spark Streaming checkpoint'leri (git'e dahil değil)
 ├── .gitignore
 └── README.md
-´´´
+```
 5. Kurulum ve Çalıştırma
 
 Bu projeyi çalıştırmak için sunucu tarafında ve yerel tarafta belirli adımların izlenmesi gerekir.
